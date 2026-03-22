@@ -1,0 +1,3 @@
+{
+  "query": "{ __type(name: \"HomePage\") { fields { name } } }"
+}

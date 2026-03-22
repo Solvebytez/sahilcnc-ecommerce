@@ -1,0 +1,4 @@
+{
+  "query": "{ __type(name: \"Query\") { fields { name } } }"
+}
+
