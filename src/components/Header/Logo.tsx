@@ -9,7 +9,7 @@ export default function Logo() {
         alt="Sahil Machines - Precision Engineering Since 1965"
         width={220}
         height={56}
-        className="h-14 w-auto object-contain"
+        className="h-9 w-auto max-w-[140px] object-contain sm:h-11 sm:max-w-[180px] md:h-12 md:max-w-none lg:h-14"
         priority
       />
     </Link>

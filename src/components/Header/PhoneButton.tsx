@@ -18,15 +18,36 @@ function PhoneIcon({ className }: { className?: string }) {
 const PHONE_NUMBER = "+91 8427641925";
 const PHONE_HREF = "tel:+918427641925";
 
-export default function PhoneButton() {
+type PhoneButtonProps = {
+  /** Icon-only for tight header bars (mobile) */
+  variant?: "full" | "icon";
+  className?: string;
+};
+
+export default function PhoneButton({
+  variant = "full",
+  className = "",
+}: PhoneButtonProps) {
+  if (variant === "icon") {
+    return (
+      <a
+        href={PHONE_HREF}
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-linear-to-r from-orange-500 to-red-600 text-white shadow-sm transition-opacity hover:opacity-95 ${className}`}
+        aria-label={`Call ${PHONE_NUMBER}`}
+      >
+        <PhoneIcon className="h-5 w-5 shrink-0" />
+      </a>
+    );
+  }
+
   return (
     <a
       href={PHONE_HREF}
-      className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-95"
+      className={`flex items-center gap-2 rounded-lg bg-linear-to-r from-orange-500 to-red-600 px-3 py-2 text-xs font-medium text-white shadow-sm transition-opacity hover:opacity-95 sm:px-4 sm:py-2.5 sm:text-sm ${className}`}
       aria-label={`Call ${PHONE_NUMBER}`}
     >
       <PhoneIcon className="h-4 w-4 shrink-0" />
-      <span>{PHONE_NUMBER}</span>
+      <span className="truncate">{PHONE_NUMBER}</span>
     </a>
   );
 }

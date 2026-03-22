@@ -53,7 +53,7 @@ export default function Banner({ slides: slidesProp, cta }: BannerProps) {
 
   return (
     <section className="relative w-full overflow-hidden">
-      <div className="relative aspect-21/9 w-full min-h-[320px] sm:aspect-3/1 sm:min-h-[380px] md:min-h-[460px]">
+      <div className="relative aspect-5/4 w-full min-h-[min(72vw,320px)] sm:aspect-video sm:min-h-[340px] md:aspect-21/9 md:min-h-[400px] lg:min-h-[440px] xl:min-h-[480px] 2xl:min-h-[520px]">
         {/* Banner image: fixed (no slide). Only caption slides. */}
         {slides.map((slide, index) => {
           const isVideo = /\.(mp4|webm|mov|ogg)(\?|$)/i.test(slide.src);
@@ -95,21 +95,21 @@ export default function Banner({ slides: slidesProp, cta }: BannerProps) {
         />
 
         {/* Only the active caption is in the DOM – no track, no next slide, no bleed */}
-        <div className="absolute inset-0 z-20 flex items-center">
-          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 z-20 flex items-center pb-14 pt-4 sm:pb-16 md:pb-0 md:pt-0">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-10">
             <div
               key={activeIndex}
-              className="animate-caption-slide-in flex max-w-2xl flex-col items-start gap-4 text-left text-white sm:gap-5"
+              className="animate-caption-slide-in flex max-w-2xl flex-col items-stretch gap-3 text-left text-white sm:items-start sm:gap-4 md:gap-5"
             >
-              <h1 className="text-2xl font-bold leading-tight sm:text-3xl md:text-4xl lg:text-[2.5rem]">
+              <h1 className="text-balance text-xl font-bold leading-tight sm:text-2xl md:text-3xl lg:text-4xl xl:text-[2.5rem] xl:leading-tight">
                 {slides[activeIndex].headline}
               </h1>
-              <p className="text-sm leading-relaxed text-white/95 sm:text-base md:text-lg">
+              <p className="text-pretty text-sm leading-relaxed text-white/95 sm:text-base md:text-lg lg:max-w-xl xl:max-w-2xl">
                 {slides[activeIndex].subheadline}
               </p>
               <Link
                 href={cta?.URL ?? "/shop"}
-                className="rounded-lg bg-linear-to-r from-red-700 via-red-500 to-orange-500 px-6 py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-lg transition-opacity hover:opacity-95"
+                className="inline-flex w-full max-w-xs items-center justify-center rounded-lg bg-linear-to-r from-red-700 via-red-500 to-orange-500 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-white shadow-lg transition-opacity hover:opacity-95 sm:w-auto sm:px-6 sm:text-sm md:max-w-none"
               >
                 {cta?.Name ?? "Explore More"}
               </Link>
@@ -117,8 +117,12 @@ export default function Banner({ slides: slidesProp, cta }: BannerProps) {
           </div>
         </div>
 
-        {/* Three dots: active dot follows slider index (0, 1, 2); click to go to that slide */}
-        <div className="absolute right-4 top-1/2 z-20 flex -translate-y-1/2 flex-col gap-3 sm:right-6 md:right-8" role="tablist" aria-label="Banner slides">
+        {/* Slide indicators: bottom row on phones; right rail on tablet+ */}
+        <div
+          className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 flex-row gap-2.5 sm:bottom-6 md:bottom-auto md:left-auto md:right-5 md:top-1/2 md:flex md:-translate-y-1/2 md:translate-x-0 md:flex-col md:gap-3 lg:right-7 xl:right-10"
+          role="tablist"
+          aria-label="Banner slides"
+        >
           {slides.map((_, index) => (
             <button
               key={index}
