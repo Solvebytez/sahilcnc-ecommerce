@@ -234,8 +234,8 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="pt-2">
-                    <Button type="submit" size="lg" className="w-full" disabled={!canSubmit || checkoutState === "processing"}>
-                      {checkoutState === "processing" ? "Processing..." : "Complete checkout"}
+                    <Button type="submit" size="lg" className="w-full" disabled={!canSubmit}>
+                      Complete checkout
                     </Button>
                     <p className="mt-2 text-xs text-muted-foreground">
                       This is a demo checkout flow. No real payment is charged.
