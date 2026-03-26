@@ -237,10 +237,10 @@ function TabButton({
       type="button"
       onClick={onClick}
       className={clsx(
-        "rounded-full border px-5 py-2 text-sm font-medium transition-colors",
+        "rounded-full border-2 px-5 py-2 text-sm font-medium transition-colors",
         active
           ? "border-neutral-900 bg-neutral-900 text-white"
-          : "border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50"
+          : "border-orange-500 bg-white text-orange-500 hover:bg-orange-50"
       )}
     >
       {children}
@@ -395,7 +395,7 @@ export default function ProductDetailsClient({
                 <ShoppingCart className="h-4 w-4" />
                 Request Quote
               </Button>
-              <Button size="lg" variant="outline" className="gap-2">
+              <Button size="lg" variant="outline" className="gap-2 border-2 border-orange-500 text-orange-500 hover:bg-orange-50">
                 <Download className="h-4 w-4" />
                 Brochure
               </Button>

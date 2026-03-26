@@ -243,19 +243,29 @@ export default function ProductDetailsClient({ model }: { model: ProductDetailUI
                 {hasItem ? "Proceed to Checkout" : "Add to Cart"}
               </Button>
 
-              <Button size="lg" variant="outline" className="gap-2">
+              <Button size="lg" variant="outline" className="gap-2 border-2 border-primary text-primary hover:bg-primary/5">
                 Request Quote
               </Button>
 
               {model.brochure?.url ? (
-                <Button asChild size="lg" variant="outline" className="gap-2">
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="gap-2 border-2 border-primary text-primary hover:bg-primary/5"
+                >
                   <a href={model.brochure.url} target="_blank" rel="noreferrer">
                     <Download className="h-4 w-4" />
                     {model.brochure.name || "Download PDF"}
                   </a>
                 </Button>
               ) : model.datasheets[0]?.url ? (
-                <Button asChild size="lg" variant="outline" className="gap-2">
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="gap-2 border-2 border-primary text-primary hover:bg-primary/5"
+                >
                   <a href={model.datasheets[0].url} target="_blank" rel="noreferrer">
                     <Download className="h-4 w-4" />
                     Download PDF
@@ -276,7 +286,7 @@ export default function ProductDetailsClient({ model }: { model: ProductDetailUI
                 value="specifications"
                 className={cn(
                   "px-7 py-3 rounded-full border-2 font-semibold tracking-wide text-base",
-                  "bg-background text-foreground border-border shadow-sm",
+                  "bg-background text-primary border-primary shadow-sm",
                   "hover:border-primary/60 hover:bg-muted/40",
                   "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary",
                   "data-[state=active]:shadow-md data-[state=active]:shadow-primary/20",
@@ -290,7 +300,7 @@ export default function ProductDetailsClient({ model }: { model: ProductDetailUI
                   value="accessories"
                   className={cn(
                     "px-7 py-3 rounded-full border-2 font-semibold tracking-wide text-base",
-                    "bg-background text-foreground border-border shadow-sm",
+                    "bg-background text-primary border-primary shadow-sm",
                     "hover:border-primary/60 hover:bg-muted/40",
                     "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary",
                     "data-[state=active]:shadow-md data-[state=active]:shadow-primary/20",
