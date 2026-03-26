@@ -1,17 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Trash2, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Trash2, ArrowRight, Loader2 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function CartPage() {
+  const router = useRouter();
   const items = useCartStore((s) => s.items);
   const removeItem = useCartStore((s) => s.removeItem);
   const clear = useCartStore((s) => s.clear);
   const hasHydrated = useCartStore((s) => s.hasHydrated);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const list = Object.values(items);
 
@@ -29,7 +33,7 @@ export default function CartPage() {
             <Button asChild variant="outline">
               <Link href="/shop">Continue shopping</Link>
             </Button>
-            <Button variant="outline" onClick={() => clear()} disabled={!list.length}>
+            <Button variant="outline" onClick={() => clear()} disabled={!list.length || isCheckingOut}>
               Clear cart
             </Button>
           </div>
@@ -78,6 +82,7 @@ export default function CartPage() {
                         variant="outline"
                         className="shrink-0"
                         onClick={() => removeItem(item.productSlug)}
+                        disabled={isCheckingOut}
                         aria-label={`Remove ${item.title}`}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -98,11 +103,28 @@ export default function CartPage() {
                   <span className="font-semibold text-foreground">{list.length}</span>
                 </div>
                 <div className="pt-2">
-                  <Button asChild size="lg" className="w-full gap-2">
-                    <Link href="/checkout">
-                      Proceed to checkout
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
+                  <Button
+                    size="lg"
+                    className="w-full gap-2"
+                    disabled={!list.length || isCheckingOut}
+                    onClick={() => {
+                      setIsCheckingOut(true);
+                      window.setTimeout(() => {
+                        router.push("/checkout");
+                      }, 1800);
+                    }}
+                  >
+                    {isCheckingOut ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Redirecting to checkout…
+                      </>
+                    ) : (
+                      <>
+                        Proceed to checkout
+                        <ArrowRight className="h-4 w-4" />
+                      </>
+                    )}
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">

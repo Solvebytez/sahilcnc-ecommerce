@@ -37,6 +37,7 @@ function Field({
   onChange,
   type = "text",
   required,
+  disabled,
 }: {
   label: string;
   name: keyof CheckoutFormState;
@@ -44,6 +45,7 @@ function Field({
   onChange: (name: keyof CheckoutFormState, value: string) => void;
   type?: string;
   required?: boolean;
+  disabled?: boolean;
 }) {
   return (
     <label className="grid gap-1.5 text-sm">
@@ -52,11 +54,12 @@ function Field({
         {required ? <span className="text-red-600"> *</span> : null}
       </span>
       <input
-        className="h-11 rounded-lg border border-border bg-background px-3 text-foreground shadow-sm outline-none focus:ring-2 focus:ring-primary"
+        className="h-11 rounded-lg border border-border bg-background px-3 text-foreground shadow-sm outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
         value={value}
         onChange={(e) => onChange(name, e.target.value)}
         type={type}
         required={required}
+        disabled={disabled}
         autoComplete="on"
       />
     </label>
@@ -96,6 +99,8 @@ export default function CheckoutPage() {
       form.pincode.trim()
   );
 
+  const isLocked = checkoutState !== "idle";
+
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -104,7 +109,7 @@ export default function CheckoutPage() {
             <h1 className="text-3xl font-bold tracking-tight text-foreground">Checkout</h1>
             <p className="mt-1 text-muted-foreground">Share your details and we’ll contact you to confirm the order.</p>
           </div>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" disabled={isLocked}>
             <Link href="/cart">Back to cart</Link>
           </Button>
         </div>
@@ -219,23 +224,38 @@ export default function CheckoutPage() {
                   }}
                 >
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label="Full name" name="fullName" value={form.fullName} onChange={onChange} required />
-                    <Field label="Phone" name="phone" value={form.phone} onChange={onChange} required />
+                    <Field label="Full name" name="fullName" value={form.fullName} onChange={onChange} required disabled={isLocked} />
+                    <Field label="Phone" name="phone" value={form.phone} onChange={onChange} required disabled={isLocked} />
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label="Email" name="email" value={form.email} onChange={onChange} type="email" required />
-                    <Field label="Company" name="company" value={form.company} onChange={onChange} />
+                    <Field
+                      label="Email"
+                      name="email"
+                      value={form.email}
+                      onChange={onChange}
+                      type="email"
+                      required
+                      disabled={isLocked}
+                    />
+                    <Field label="Company" name="company" value={form.company} onChange={onChange} disabled={isLocked} />
                   </div>
-                  <Field label="Address" name="address" value={form.address} onChange={onChange} required />
+                  <Field label="Address" name="address" value={form.address} onChange={onChange} required disabled={isLocked} />
                   <div className="grid gap-4 sm:grid-cols-3">
-                    <Field label="City" name="city" value={form.city} onChange={onChange} required />
-                    <Field label="State" name="state" value={form.state} onChange={onChange} required />
-                    <Field label="Pincode" name="pincode" value={form.pincode} onChange={onChange} required />
+                    <Field label="City" name="city" value={form.city} onChange={onChange} required disabled={isLocked} />
+                    <Field label="State" name="state" value={form.state} onChange={onChange} required disabled={isLocked} />
+                    <Field label="Pincode" name="pincode" value={form.pincode} onChange={onChange} required disabled={isLocked} />
                   </div>
 
                   <div className="pt-2">
-                    <Button type="submit" size="lg" className="w-full" disabled={!canSubmit}>
-                      Complete checkout
+                    <Button type="submit" size="lg" className="w-full gap-2" disabled={!canSubmit || isLocked}>
+                      {checkoutState === "processing" ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Processing…
+                        </>
+                      ) : (
+                        "Complete checkout"
+                      )}
                     </Button>
                     <p className="mt-2 text-xs text-muted-foreground">
                       This is a demo checkout flow. No real payment is charged.
