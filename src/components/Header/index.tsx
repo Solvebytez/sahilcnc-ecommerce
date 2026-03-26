@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import Logo from "./Logo";
 import NavLink from "./NavLink";
 import PhoneButton from "./PhoneButton";
+import { useCartStore } from "@/store/cart";
 
 const NAV_ITEMS: { href: string; label: string; hasDropdown?: boolean }[] = [
   { href: "/", label: "HOME" },
@@ -59,6 +60,8 @@ function MenuIcon({ open }: { open: boolean }) {
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const uniqueCount = useCartStore((s) => s.uniqueCount());
+  const hasHydrated = useCartStore((s) => s.hasHydrated);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -102,10 +105,15 @@ export default function Header() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3 md:gap-4">
           <Link
             href="/cart"
-            className="flex h-11 w-11 items-center justify-center rounded-lg border border-neutral-300 bg-white text-neutral-800 transition-colors hover:bg-neutral-50 sm:h-auto sm:w-auto sm:p-2.5"
+            className="relative flex h-11 w-11 items-center justify-center rounded-lg border border-neutral-300 bg-white text-neutral-800 transition-colors hover:bg-neutral-50 sm:h-auto sm:w-auto sm:p-2.5"
             aria-label="View cart"
           >
             <CartIcon className="h-5 w-5" />
+            {hasHydrated && uniqueCount > 0 ? (
+              <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-linear-to-r from-orange-500 to-red-600 px-1.5 text-[11px] font-bold leading-none text-white shadow-sm">
+                {uniqueCount}
+              </span>
+            ) : null}
           </Link>
 
           <div className="hidden lg:block">

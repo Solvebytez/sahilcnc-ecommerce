@@ -39,12 +39,16 @@ export default function ModelsWeOffers({
             const productTitle = attrs?.Title ?? "";
             const slug = attrs?.Slug ?? "";
             const categoryTitle = attrs?.Category?.data?.attributes?.Title ?? "";
+            const subCategorySlug = attrs?.Category?.data?.attributes?.Slug ?? "";
+            const categorySlug = attrs?.Category?.data?.attributes?.Category?.data?.attributes?.Slug ?? "";
             const thumbUrl = attrs?.Thumbnail?.data?.attributes?.url ?? "/banner.png";
-            const productHref = slug ? `/shop/${slug}` : "#";
+            const canonicalHref =
+              slug && categorySlug && subCategorySlug ? `/${categorySlug}/${subCategorySlug}/${slug}/` : null;
+            const productHref = canonicalHref ?? (slug ? `/shop/${slug}` : "#");
 
             return (
               <li key={item.id ?? index}>
-                <article className="shine flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-white shadow-xl transition-all">
+                <article className="shine font-product-card flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-white shadow-xl transition-all">
                   <div className="p-4 pb-0">
                     <Link href={productHref} className="group relative block overflow-hidden rounded-xl border-2 border-red-600 bg-neutral-100">
                       <div className="relative aspect-4/3 w-full">
@@ -70,14 +74,14 @@ export default function ModelsWeOffers({
                       </span>
                     ) : null}
 
-                    <h3 className="line-clamp-2 min-h-12 text-base font-bold leading-tight text-neutral-900">
+                    <h3 className="line-clamp-2 min-h-12 text-base font-bold leading-tight text-neutral-900 uppercase">
                       {productTitle}
                     </h3>
 
                     <div className="mt-4">
                       <Link
                         href={productHref}
-                        className="inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-orange-500 to-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95"
+                        className="inline-flex w-full items-center justify-center rounded-lg bg-linear-to-r from-orange-500 to-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95 uppercase"
                         aria-label={`Buy ${productTitle}`}
                       >
                         Buy Now

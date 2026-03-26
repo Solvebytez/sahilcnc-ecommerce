@@ -14,7 +14,15 @@ export type FeaturedProductNode = {
       data?: { attributes?: { url?: string } };
     } | null;
     Category?: {
-      data?: { attributes?: { Title?: string; Slug?: string } };
+      data?: {
+        attributes?: {
+          Title?: string;
+          Slug?: string;
+          Category?: {
+            data?: { attributes?: { Title?: string; Slug?: string } } | null;
+          } | null;
+        };
+      };
     } | null;
   };
 };
@@ -83,7 +91,7 @@ export default function FeaturedProducts({
 
             return (
               <li key={item.id ?? index}>
-                <article className="shine flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-white shadow-xl transition-all">
+                <article className="shine font-product-card flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-400/25 bg-white shadow-xl transition-all">
                   {/* Inner gap: padding between card edge and image */}
                   <div className="p-4 pb-0">
                     <Link href={productHref} className="group relative block overflow-hidden rounded-xl border-2 border-red-600 bg-neutral-100">
@@ -111,7 +119,7 @@ export default function FeaturedProducts({
                     {/* Category name and arrow on the same row */}
                     <div className="flex flex-1 items-center justify-between gap-3">
                       {categoryTitle && (
-                        <h3 className="min-w-0 flex-1 text-base font-bold leading-tight text-neutral-900">
+                        <h3 className="min-w-0 flex-1 text-base font-bold leading-tight text-neutral-900 uppercase">
                           {categoryHref ? (
                             <Link href={categoryHref} className="hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                               {categoryTitle}

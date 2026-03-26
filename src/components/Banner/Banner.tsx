@@ -53,7 +53,7 @@ export default function Banner({ slides: slidesProp, cta }: BannerProps) {
 
   return (
     <section className="relative w-full overflow-hidden">
-      <div className="relative aspect-5/4 w-full min-h-[min(72vw,320px)] sm:aspect-video sm:min-h-[340px] md:aspect-21/9 md:min-h-[400px] lg:min-h-[440px] xl:min-h-[480px] 2xl:min-h-[520px]">
+      <div className="relative w-full h-[clamp(260px,50vw,420px)] sm:h-[clamp(300px,38vw,460px)] lg:h-[clamp(340px,32vw,520px)]">
         {/* Banner image: fixed (no slide). Only caption slides. */}
         {slides.map((slide, index) => {
           const isVideo = /\.(mp4|webm|mov|ogg)(\?|$)/i.test(slide.src);

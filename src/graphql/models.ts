@@ -21,6 +21,14 @@ export const MODELS_WE_OFFERS_QUERY = /* GraphQL */ `
               attributes {
                 Title
                 Slug
+                Category {
+                  data {
+                    attributes {
+                      Title
+                      Slug
+                    }
+                  }
+                }
               }
             }
           }
@@ -44,7 +52,15 @@ export type ModelsWeOffersResponse = {
         } | null;
         Category?: {
           data?: {
-            attributes?: { Title?: string; Slug?: string };
+            attributes?: {
+              Title?: string;
+              Slug?: string;
+              Category?: {
+                data?: {
+                  attributes?: { Title?: string; Slug?: string };
+                } | null;
+              } | null;
+            };
           } | null;
         } | null;
       } | null;

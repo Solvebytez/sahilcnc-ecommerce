@@ -108,6 +108,7 @@ export default async function Home() {
       const thumbUrl = thumbUrlRaw ? strapiMediaUrl(thumbUrlRaw) : "/banner.png";
 
       const catAttrs = attrs?.Category?.data?.attributes;
+      const parentCatAttrs = catAttrs?.Category?.data?.attributes;
 
       return {
         id: node.id ?? slug ?? title ?? String(index),
@@ -123,6 +124,16 @@ export default async function Home() {
               attributes: {
                 Title: catAttrs?.Title ?? "",
                 Slug: catAttrs?.Slug ?? "",
+                Category: parentCatAttrs
+                  ? {
+                      data: {
+                        attributes: {
+                          Title: parentCatAttrs.Title ?? "",
+                          Slug: parentCatAttrs.Slug ?? "",
+                        },
+                      },
+                    }
+                  : null,
               },
             },
           },
