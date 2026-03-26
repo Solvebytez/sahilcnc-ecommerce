@@ -248,14 +248,7 @@ export default function CheckoutPage() {
 
                   <div className="pt-2">
                     <Button type="submit" size="lg" className="w-full gap-2" disabled={!canSubmit || isLocked}>
-                      {checkoutState === "processing" ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          Processing…
-                        </>
-                      ) : (
-                        "Complete checkout"
-                      )}
+                      Complete checkout
                     </Button>
                     <p className="mt-2 text-xs text-muted-foreground">
                       This is a demo checkout flow. No real payment is charged.
