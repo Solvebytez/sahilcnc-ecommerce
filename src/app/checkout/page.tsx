@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -70,7 +70,14 @@ export default function CheckoutPage() {
   const list = useMemo(() => Object.values(items), [items]);
 
   const [form, setForm] = useState<CheckoutFormState>(initialForm);
-  const [submitted, setSubmitted] = useState(false);
+  const [checkoutState, setCheckoutState] = useState<"idle" | "processing" | "success">("idle");
+  const [placedItems, setPlacedItems] = useState(list);
+  const [orderRef, setOrderRef] = useState("");
+  const [expectedContact, setExpectedContact] = useState("");
+
+  useEffect(() => {
+    if (checkoutState === "idle") setPlacedItems(list);
+  }, [list, checkoutState]);
 
   const onChange = (name: keyof CheckoutFormState, value: string) =>
     setForm((f) => ({
@@ -106,35 +113,57 @@ export default function CheckoutPage() {
           <Card className="border-border">
             <CardContent className="p-6 text-sm text-muted-foreground">Loading checkout…</CardContent>
           </Card>
-        ) : list.length === 0 ? (
+        ) : checkoutState === "processing" ? (
           <Card className="border-border">
-            <CardContent className="p-8">
-              <p className="text-muted-foreground">Your cart is empty.</p>
-              <div className="mt-6">
-                <Button asChild>
-                  <Link href="/shop">Browse products</Link>
-                </Button>
+            <CardContent className="p-10">
+              <div className="flex flex-col items-center text-center">
+                <div className="mb-4 rounded-full bg-primary/10 p-4">
+                  <Loader2 className="h-7 w-7 animate-spin text-primary" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground">Processing your checkout</h2>
+                <p className="mt-2 max-w-xl text-muted-foreground">
+                  Please wait while we validate your request, lock the selected machines, and generate your order reference.
+                </p>
+                <div className="mt-6 w-full max-w-md rounded-lg border border-border bg-muted/30 p-4 text-sm text-muted-foreground">
+                  <p>Verifying contact details...</p>
+                  <p className="mt-1">Reserving {placedItems.length} item(s) from your cart...</p>
+                </div>
               </div>
             </CardContent>
           </Card>
-        ) : submitted ? (
+        ) : checkoutState === "success" ? (
           <Card className="border-border">
             <CardContent className="p-10">
               <div className="flex flex-col items-center text-center">
                 <div className="mb-4 rounded-full bg-primary/10 p-3">
                   <CheckCircle2 className="h-7 w-7 text-primary" />
                 </div>
-                <h2 className="text-2xl font-bold text-foreground">Request received</h2>
+                <h2 className="text-2xl font-bold text-foreground">Checkout completed successfully</h2>
                 <p className="mt-2 max-w-xl text-muted-foreground">
-                  Thanks {form.fullName.split(" ")[0] || ""}. We’ve received your checkout request and will contact you
-                  shortly.
+                  Thanks {form.fullName.split(" ")[0] || ""}. Your order request is confirmed and queued with our sales team.
                 </p>
+                <div className="mt-5 w-full max-w-md rounded-lg border border-border bg-muted/30 p-4 text-left text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Order reference</span>
+                    <span className="font-semibold text-foreground">{orderRef}</span>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-muted-foreground">Items reserved</span>
+                    <span className="font-semibold text-foreground">{placedItems.length}</span>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-muted-foreground">Expected callback</span>
+                    <span className="font-semibold text-foreground">{expectedContact}</span>
+                  </div>
+                </div>
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
                   <Button
                     variant="outline"
                     onClick={() => {
-                      setSubmitted(false);
+                      setCheckoutState("idle");
                       setForm(initialForm);
+                      setOrderRef("");
+                      setExpectedContact("");
                     }}
                   >
                     Place another request
@@ -145,6 +174,17 @@ export default function CheckoutPage() {
                     </Link>
                   </Button>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        ) : list.length === 0 ? (
+          <Card className="border-border">
+            <CardContent className="p-8">
+              <p className="text-muted-foreground">Your cart is empty.</p>
+              <div className="mt-6">
+                <Button asChild>
+                  <Link href="/shop">Browse products</Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -160,8 +200,22 @@ export default function CheckoutPage() {
                   onSubmit={(e) => {
                     e.preventDefault();
                     if (!canSubmit) return;
-                    setSubmitted(true);
-                    clear();
+                    setPlacedItems(list);
+                    setCheckoutState("processing");
+                    setOrderRef(`ORD-${Date.now().toString().slice(-6)}`);
+                    setExpectedContact(
+                      new Intl.DateTimeFormat("en-IN", {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        day: "2-digit",
+                        month: "short",
+                      }).format(new Date(Date.now() + 2 * 60 * 60 * 1000))
+                    );
+
+                    window.setTimeout(() => {
+                      clear();
+                      setCheckoutState("success");
+                    }, 2600);
                   }}
                 >
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -180,11 +234,11 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="pt-2">
-                    <Button type="submit" size="lg" className="w-full" disabled={!canSubmit}>
-                      Place order request
+                    <Button type="submit" size="lg" className="w-full" disabled={!canSubmit || checkoutState === "processing"}>
+                      {checkoutState === "processing" ? "Processing..." : "Complete checkout"}
                     </Button>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      No payment integration yet — this will send an enquiry-style request.
+                      This is a demo checkout flow. No real payment is charged.
                     </p>
                   </div>
                 </form>
